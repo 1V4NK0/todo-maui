@@ -13,14 +13,15 @@
 
             <Label Text="Let's add something :)" FontFamily="Arial" x:Name="emptyListLabel" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
 
-
+            <!-- for dynamic UI update you use collection view with binding to the list of tasks so it allows to refresh the UI each time you change, add or delete task-->
             <CollectionView ItemsSource="{Binding Tasks}">
+                <!--item template is basically how each item in the collection will look like, its structure-->
                 <CollectionView.ItemTemplate >
                     <DataTemplate>
                         <Grid ColumnDefinitions="*,*" Padding="10" RowSpacing="10" Margin="0,10,0,0" BackgroundColor="MediumSeaGreen"> 
                             <Label FontFamily="Arial" Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center"/>
                             <HorizontalStackLayout Grid.Column="1" Spacing="10">
-                                <CheckBox IsChecked="{Binding completed}" WidthRequest="30" HeightRequest="30" Color="White" CheckedChanged="CheckBox_CheckedChanged"/>
+                                <CheckBox IsChecked="{Binding completed}" x:Name="CheckBox" WidthRequest="30" HeightRequest="30" Color="White" CheckedChanged="CheckBox_CheckedChanged"/>
                                 <Button Text="Delete" Clicked="DeleteTask_Clicked" Background="White" FontAttributes="Bold" TextColor="Black"/>
                                 <Button Text="Edit" Clicked="EditTask_Clicked" Background="White" FontAttributes="Bold"  TextColor="Black"/>
                             </HorizontalStackLayout>
