@@ -12,16 +12,12 @@ namespace RobertHarrisonTODO
             InitializeComponent();
             Title = "";
             BindingContext = this;
-            
-
         }
 
-        
-
-    async void AddTaskBtn_Clicked(System.Object sender, System.EventArgs e)
+        async void AddTaskBtn_Clicked(System.Object sender, System.EventArgs e)
         {
             string description = await DisplayPromptAsync("Task description", "Enter your task description");
-            if (description == null)
+            if (string.IsNullOrWhiteSpace(description))
             {
                 await DisplayAlert("Error", "You have to enter a description to create a task", "OK");
                 return;
@@ -33,18 +29,11 @@ namespace RobertHarrisonTODO
 
         void checkIsListEmpty()
         {
-            if (Tasks.Count > 0)
-            {
-                emptyListLabel.IsVisible = false;
-            } else
-            {
-                emptyListLabel.IsVisible = true;
-            }
+            emptyListLabel.IsVisible = Tasks.Count == 0;
         }
 
         private void DeleteTask_Clicked(object sender, EventArgs e)
         {
-            
             Button button = (Button)sender;
             var task = button?.BindingContext as Task;
             Tasks.Remove(task);
@@ -53,15 +42,22 @@ namespace RobertHarrisonTODO
 
         private async void EditTask_Clicked(object sender, EventArgs e)
         {
-            string newDescription = await DisplayPromptAsync("", "Enter new description");
-            if (newDescription == null)
-            {
-                await DisplayAlert("Error", "Enter description", "Ok");
-                return;
-            }
             Button button = (Button)sender;
             Task task = button.BindingContext as Task;
-            task.description = newDescription;
+
+            string newDescription = await DisplayPromptAsync("Edit Task", "Enter new description");
+            if (newDescription == null)
+            {
+                await DisplayAlert("Error", "You must enter new description", "Ok");
+            }
+            //task.description = newDescription; for some reason it does not display new description in the list but description actually changes
+            //for work around create new task with new description and remove the old one
+            Console.Write(newDescription);
+            Tasks.Remove(task);
+            Task newTask = new Task(newDescription, false);
+            Tasks.Add(newTask);
         }
+
+        
     }
 }

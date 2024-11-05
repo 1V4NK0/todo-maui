@@ -7,20 +7,20 @@
         <VerticalStackLayout Spacing="20">
 
             <Grid BackgroundColor="MediumSeaGreen" Padding="10" ColumnDefinitions="*,*">
-                <Label Text="ToDo App" FontAttributes="Bold" FontSize="23" Grid.Column="0" HorizontalOptions="Start" />
-                <Label Text="Your tasks" FontAttributes="Bold" FontSize="23" Grid.Column="1" HorizontalOptions="End" />
+                <Label Text="ToDo App" FontFamily="Arial" FontAttributes="Bold" FontSize="23" Grid.Column="0" HorizontalOptions="Start" />
+                <Label Text="Your tasks" FontFamily="Arial" FontAttributes="Bold" FontSize="23" Grid.Column="1" HorizontalOptions="End" />
             </Grid>
 
-            <Label Text="Let's add something!" x:Name="emptyListLabel" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
+            <Label Text="Let's add something :)" FontFamily="Arial" x:Name="emptyListLabel" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
 
 
             <CollectionView ItemsSource="{Binding Tasks}">
                 <CollectionView.ItemTemplate >
                     <DataTemplate>
                         <Grid ColumnDefinitions="*,*" Padding="10" RowSpacing="10" Margin="0,10,0,0" BackgroundColor="MediumSeaGreen"> 
-                            <Label Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center"/>
+                            <Label FontFamily="Arial" Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center"/>
                             <HorizontalStackLayout Grid.Column="1" Spacing="10">
-                                <CheckBox IsChecked="{Binding completed}" WidthRequest="30" HeightRequest="30" Color="White"/>
+                                <CheckBox IsChecked="{Binding completed}" WidthRequest="30" HeightRequest="30" Color="White" CheckedChanged="CheckBox_CheckedChanged"/>
                                 <Button Text="Delete" Clicked="DeleteTask_Clicked" Background="White" FontAttributes="Bold" TextColor="Black"/>
                                 <Button Text="Edit" Clicked="EditTask_Clicked" Background="White" FontAttributes="Bold"  TextColor="Black"/>
                             </HorizontalStackLayout>
