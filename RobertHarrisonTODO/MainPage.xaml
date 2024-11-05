@@ -4,9 +4,35 @@
              x:Class="RobertHarrisonTODO.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout>
+        <VerticalStackLayout Spacing="20">
 
+            <Grid BackgroundColor="MediumSeaGreen" Padding="10" ColumnDefinitions="*,*">
+                <Label Text="ToDo App" FontAttributes="Bold" FontSize="23" Grid.Column="0" HorizontalOptions="Start" />
+                <Label Text="Your tasks" FontAttributes="Bold" FontSize="23" Grid.Column="1" HorizontalOptions="End" />
+            </Grid>
 
+            <!--if there are no tasks display this label-->
+            <Label Text="Let's add something!" x:Name="emptyList" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
+
+            <Button Text="+" x:Name="AddTaskBtn" Background="MediumSeaGreen" WidthRequest="60" Padding="10" FontSize="30" HeightRequest="60" Clicked="AddTaskBtn_Clicked"/>
+
+            <!--collection view is used for dynamic display of tasks and updates as tasks are added or deleted -->
+            <!--{binding} binds the view with our list of tasks which allows for dynamic update-->
+            <CollectionView ItemsSource="{Binding Tasks}">
+                <!--this part shows how structure of each item will be displayed-->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*">
+                            <Label Text="Task description" x:Name="TaskDescription"/>
+                            <HorizontalStackLayout>
+                                <CheckBox />
+                                <Button Text="Delete"/>
+                                <Button Text="Edit"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 
