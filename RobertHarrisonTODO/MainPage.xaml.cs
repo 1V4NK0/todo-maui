@@ -1,33 +1,67 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+using Microsoft.Maui.Controls;
 
-namespace RobertHarrisonTODO;
-//dotnet build -t:Run -f net8.0-ios
-//dotnet build -t:Run -f net8.0-maccatalyst 
-public partial class MainPage : ContentPage
+namespace RobertHarrisonTODO
 {
-    public ObservableCollection<Task> Tasks = new ObservableCollection<Task>();
+    public partial class MainPage : ContentPage
+    {
+        public ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
 
-	public MainPage()
-	{
-		InitializeComponent();
-		Title = "";
+        public MainPage()
+        {
+            InitializeComponent();
+            Title = "";
+            BindingContext = this;
+            
+
+        }
+
         
-	}
-
-    
 
     async void AddTaskBtn_Clicked(System.Object sender, System.EventArgs e)
-    {
-        string description = await DisplayPromptAsync("Task description", "Enter your task description");
-        if (description == null)
         {
-            await DisplayAlert("Error","You have to enter description to create a task", "OK");
-            return;
+            string description = await DisplayPromptAsync("Task description", "Enter your task description");
+            if (description == null)
+            {
+                await DisplayAlert("Error", "You have to enter a description to create a task", "OK");
+                return;
+            }
+            Task newTask = new Task(description, false);
+            Tasks.Add(newTask);
+            checkIsListEmpty();
         }
-        Task newTask = new Task(description, false);
-        Tasks.Add(newTask);
+
+        void checkIsListEmpty()
+        {
+            if (Tasks.Count > 0)
+            {
+                emptyListLabel.IsVisible = false;
+            } else
+            {
+                emptyListLabel.IsVisible = true;
+            }
+        }
+
+        private void DeleteTask_Clicked(object sender, EventArgs e)
+        {
+            
+            Button button = (Button)sender;
+            var task = button?.BindingContext as Task;
+            Tasks.Remove(task);
+            checkIsListEmpty();
+        }
+
+        private async void EditTask_Clicked(object sender, EventArgs e)
+        {
+            string newDescription = await DisplayPromptAsync("", "Enter new description");
+            if (newDescription == null)
+            {
+                await DisplayAlert("Error", "Enter description", "Ok");
+                return;
+            }
+            Button button = (Button)sender;
+            Task task = button.BindingContext as Task;
+            task.description = newDescription;
+        }
     }
 }
-
-

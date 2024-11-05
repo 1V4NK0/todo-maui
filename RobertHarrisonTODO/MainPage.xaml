@@ -11,30 +11,26 @@
                 <Label Text="Your tasks" FontAttributes="Bold" FontSize="23" Grid.Column="1" HorizontalOptions="End" />
             </Grid>
 
-            <!--if there are no tasks display this label-->
-            <Label Text="Let's add something!" x:Name="emptyList" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
+            <Label Text="Let's add something!" x:Name="emptyListLabel" Margin="0,100,0,0" FontSize="27" HorizontalTextAlignment="Center" IsVisible="True"/>
 
-            <Button Text="+" x:Name="AddTaskBtn" Background="MediumSeaGreen" WidthRequest="60" Padding="10" FontSize="30" HeightRequest="60" Clicked="AddTaskBtn_Clicked"/>
 
-            <!--collection view is used for dynamic display of tasks and updates as tasks are added or deleted -->
-            <!--{binding} binds the view with our list of tasks which allows for dynamic update-->
             <CollectionView ItemsSource="{Binding Tasks}">
-                <!--this part shows how structure of each item will be displayed-->
-                <CollectionView.ItemTemplate>
+                <CollectionView.ItemTemplate >
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*,*">
-                            <Label Text="Task description" x:Name="TaskDescription"/>
-                            <HorizontalStackLayout>
-                                <CheckBox />
-                                <Button Text="Delete"/>
-                                <Button Text="Edit"/>
+                        <Grid ColumnDefinitions="*,*" Padding="10" RowSpacing="10" Margin="0,10,0,0" BackgroundColor="MediumSeaGreen"> 
+                            <Label Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center"/>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                                <CheckBox IsChecked="{Binding completed}" WidthRequest="30" HeightRequest="30" Color="White"/>
+                                <Button Text="Delete" Clicked="DeleteTask_Clicked" Background="White" FontAttributes="Bold" TextColor="Black"/>
+                                <Button Text="Edit" Clicked="EditTask_Clicked" Background="White" FontAttributes="Bold"  TextColor="Black"/>
                             </HorizontalStackLayout>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <Button Text="+" x:Name="AddTaskBtn" Background="MediumSeaGreen" WidthRequest="60" Padding="10" FontSize="30" HeightRequest="60" Clicked="AddTaskBtn_Clicked"/>
+
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>
-

@@ -3,8 +3,8 @@ namespace RobertHarrisonTODO
 {
 	public class Task
 	{
-		string description { get; set; }
-		bool completed { get; set; }
+		public string description { get; set; }
+		public bool completed { get; set; }
 
 		public Task(string description, bool completed)
 		{
