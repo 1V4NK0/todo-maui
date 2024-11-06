@@ -1,112 +1,124 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Text.Json;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
 
 namespace RobertHarrisonTODO
 {
     public partial class MainPage : ContentPage
     {
+        // ObservableCollection to hold the tasks
         public ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
-        private const string TasksKey = "tasks"; // Key for saving the tasks
+
+        // Key used to store and retrieve tasks from preferences
+        private const string TasksKey = "tasks";
 
         public MainPage()
         {
             InitializeComponent();
-            Title = "";
-            BindingContext = this;
-            LoadTasks(); // load all saved tasks on app opening
-                         
+            Title = "";  // Set title (empty in this case)
+            BindingContext = this;  // Set the binding context to the current page
+            LoadTasks();  // Load tasks from saved preferences when the page loads
         }
 
+        // Event handler for when the checkbox is checked or unchecked
         private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            // get the checkbox that triggered the event
             CheckBox checkBox = (CheckBox)sender;
-
-            // get the associated task from the BindingContext
             Task task = (Task)checkBox.BindingContext;
-
-            // update the task's completed property based on the checkbox state
-            task.completed = e.Value;
-
-            SaveTasks();
+            task.completed = e.Value;  // Update the task's completed status
+            SortTasks();  // Sort tasks after status change
+            SaveTasks();  // Save updated tasks
         }
 
-
+        // Event handler for adding a new task
         async void AddTaskBtn_Clicked(System.Object sender, System.EventArgs e)
         {
-            //getting a task description from user if input empty you get pop up
+            // Prompt the user for a task description
             string description = await DisplayPromptAsync("Task description", "Enter your task description");
-            if (string.IsNullOrWhiteSpace(description))
+            if (string.IsNullOrWhiteSpace(description))  // Check if description is empty or null
             {
                 await DisplayAlert("Error", "You have to enter a description to create a task", "OK");
                 return;
             }
-            //creating new task based on input and adding to the list, saving 
-            Task newTask = new Task(description, false);
-            Tasks.Add(newTask);
-            SaveTasks(); 
-            checkIsListEmpty();
+            Task newTask = new Task(description, false);  // Create a new task with description and incomplete status
+            Tasks.Add(newTask);  // Add the new task to the collection
+            SaveTasks();  // Save tasks after adding the new one
+            checkIsListEmpty();  // Check if the list is empty and show/hide the empty list label
         }
 
+        // Checks if the task list is empty and shows the appropriate label
         void checkIsListEmpty()
         {
-            //if tasks list empty label "lets add something" goes away
-            emptyListLabel.IsVisible = Tasks.Count == 0;
+            emptyListLabel.IsVisible = Tasks.Count == 0;  // Show the empty list label if no tasks are present
         }
 
+        // Event handler for deleting a task
         private void DeleteTask_Clicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             var task = button?.BindingContext as Task;
-            Tasks.Remove(task);
-            SaveTasks(); 
-            checkIsListEmpty();
+            Tasks.Remove(task);  // Remove the task from the collection
+            SaveTasks();  // Save tasks after deletion
+            checkIsListEmpty();  // Check if the list is empty and update the label
         }
 
+        // Event handler for editing a task
         private async void EditTask_Clicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             Task task = button.BindingContext as Task;
-
             string newDescription = await DisplayPromptAsync("Edit Task", "Enter new description");
-            if (newDescription == null)
+            if (newDescription == null)  // Check if the new description is null or empty
             {
                 await DisplayAlert("Error", "You must enter new description", "Ok");
                 return;
             }
-            //seems weird but for some reason task description in UI is not being changed while it is underneath so in order to update UI
-            //you delete current task and create a new one based on old with updated description and substitute it
-            Tasks.Remove(task);
-            Task newTask = new Task(newDescription, false);
-            Tasks.Add(newTask);
-            SaveTasks(); // save the updated tasks collection
+
+            Tasks.Remove(task);  // Remove the old task
+            Task newTask = new Task(newDescription, false);  // Create a new task with the new description
+            Tasks.Add(newTask);  // Add the new task to the collection
+            SaveTasks();  // Save tasks after editing
         }
 
+        // Save the current tasks collection to preferences in JSON format
         private void SaveTasks()
         {
-            // in order to save task object you have to basically convert it into string and then save
-            string tasksJson = JsonSerializer.Serialize(Tasks);
-            Preferences.Set(TasksKey, tasksJson);
+            string tasksJson = JsonSerializer.Serialize(Tasks.ToList());  // Serialize the tasks to JSON
+            Preferences.Set(TasksKey, tasksJson);  // Save the serialized tasks to preferences
         }
 
+        // Load tasks from preferences and display them
         private void LoadTasks()
         {
-            checkIsListEmpty();
-
-            // Retrieve the JSON string from preferences
-            string jsonTasks = Preferences.Get(TasksKey, null);
-            if (jsonTasks != null)
+            checkIsListEmpty();  // Check if the list is empty when loading
+            string jsonTasks = Preferences.Get(TasksKey, null);  // Retrieve the saved tasks from preferences
+            if (jsonTasks != null)  // If tasks exist in preferences
             {
-                // converting string task obj into an actual obj which will be used
-                var tasks = JsonSerializer.Deserialize<ObservableCollection<Task>>(jsonTasks);
-                foreach (var task in tasks)
+                var tasks = JsonSerializer.Deserialize<List<Task>>(jsonTasks);  // Deserialize the JSON to a list of tasks
+                foreach (var task in tasks)  // Add each task to the ObservableCollection
                 {
-                    Tasks.Add(task); // add each task to the ObservableCollection
+                    Tasks.Add(task);
                 }
             }
+            checkIsListEmpty();  // Check if the list is empty after loading
+        }
+
+        // Sort tasks by their completion status, putting completed tasks at the bottom
+        private void SortTasks()
+        {
+            // Sort the tasks by 'completed' status, placing completed tasks at the bottom
+            var sortedTasks = Tasks.OrderBy(task => task.completed).ToList();
+
+            // Clear the existing tasks and re-add them in sorted order not sure why but without running on main thread thing app crashes
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Tasks.Clear();
+                foreach (var task in sortedTasks)
+                {
+                    Tasks.Add(task);
+                }
+            });
+
+            SaveTasks();  // Save tasks after sorting
         }
     }
 }
