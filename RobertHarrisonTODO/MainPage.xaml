@@ -23,8 +23,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid ColumnDefinitions="*,*" Padding="10" RowSpacing="10" Margin="0,10,0,0" BackgroundColor="MediumSeaGreen"> 
-                            <Label FontFamily="Arial" Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center"/>
-                            <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                            <Label FontFamily="Arial" Text="{Binding description}" FontSize="17" x:Name="TaskDescription" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start"/>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End">
                                 <CheckBox IsChecked="{Binding completed}" x:Name="CheckBox" WidthRequest="30" HeightRequest="30" Color="White" CheckedChanged="CheckBox_CheckedChanged"/>
                                 <Button Text="Delete" Clicked="DeleteTask_Clicked" Background="White" FontAttributes="Bold" TextColor="Black"/>
                                 <Button Text="Edit" Clicked="EditTask_Clicked" Background="White" FontAttributes="Bold" TextColor="Black"/>

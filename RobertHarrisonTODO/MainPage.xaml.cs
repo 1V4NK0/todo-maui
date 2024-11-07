@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+//dotnet build -t:Run -f net8.0-maccatalyst
 using System.Text.Json;
-
 namespace RobertHarrisonTODO
 {
     public partial class MainPage : ContentPage
@@ -22,11 +22,14 @@ namespace RobertHarrisonTODO
         // Event handler for when the checkbox is checked or unchecked
         private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            CheckBox checkBox = (CheckBox)sender;
-            Task task = (Task)checkBox.BindingContext;
-            task.completed = e.Value;  // Update the task's completed status
-            SortTasks();  // Sort tasks after status change
-            SaveTasks();  // Save updated tasks
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                CheckBox checkBox = (CheckBox)sender;
+                Task task = (Task)checkBox.BindingContext;
+                task.completed = e.Value;  // Update the task's completed status
+                SortTasks();  // Sort tasks after status change
+                SaveTasks();  // Save updated tasks
+            });
         }
 
         // Event handler for adding a new task
@@ -108,7 +111,7 @@ namespace RobertHarrisonTODO
             // Sort the tasks by 'completed' status, placing completed tasks at the bottom
             var sortedTasks = Tasks.OrderBy(task => task.completed).ToList();
 
-            // Clear the existing tasks and re-add them in sorted order not sure why but without running on main thread thing app crashes
+            //Clear the existing tasks and re-add them in sorted order not sure why but without running on main thread thing app crashes
             Device.BeginInvokeOnMainThread(() =>
             {
                 Tasks.Clear();
@@ -119,6 +122,8 @@ namespace RobertHarrisonTODO
             });
 
             SaveTasks();  // Save tasks after sorting
+
+
         }
     }
 }
