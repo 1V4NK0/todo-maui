@@ -22,14 +22,14 @@ namespace RobertHarrisonTODO
         // Event handler for when the checkbox is checked or unchecked
         private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
                 CheckBox checkBox = (CheckBox)sender;
                 Task task = (Task)checkBox.BindingContext;
                 task.completed = e.Value;  // Update the task's completed status
-                SortTasks();  // Sort tasks after status change
+                //SortTasks();  // Sort tasks after status change
                 SaveTasks();  // Save updated tasks
-            });
+            //});
         }
 
         // Event handler for adding a new task
